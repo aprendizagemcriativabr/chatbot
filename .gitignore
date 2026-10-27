@@ -1,0 +1,39 @@
+# Dependências
+node_modules/
+/.pnp
+.pnp.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Arquivos de variáveis de ambiente
+.env
+.env.test
+.env.production
+.env.local
+
+# Build, diretórios de saída e cobertura de testes
+dist/
+build/
+out/
+coverage/
+.nyc_output/
+.next/
+.nuxt/
+
+# Caches e arquivos temporários
+.npm
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+
+# Arquivos de sistema operacional (opcional, mas recomendado)
+.DS_Store
+Thumbs.db
+
