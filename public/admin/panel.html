@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin RBAC - Painel</title>
+    <link rel="icon" type="image/svg+xml" href="/admin/assets/favicon.svg" />
+    <link rel="stylesheet" href="/admin/assets/styles.css" />
+  </head>
+  <body class="admin-shell">
+    <div class="app-frame">
+      <header class="topbar">
+        <a class="brand" href="/admin/select#dashboard" data-route="dashboard">
+          <span class="brand-mark">RBAC</span>
+          <span class="brand-copy">
+            <strong>Chatbot Admin</strong>
+            <small id="session-label">Sessão ativa</small>
+          </span>
+        </a>
+
+        <div class="topbar-actions">
+          <button class="button secondary compact" id="logout-button" type="button">Sair</button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar" aria-label="Navegação do painel">
+          <nav class="nav-list">
+            <button class="nav-item active" data-page="dashboard" type="button">
+              <span class="nav-icon">D</span>
+              <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-page="articulators" type="button">
+              <span class="nav-icon">A</span>
+              <span>Articuladores</span>
+            </button>
+            <button class="nav-item" data-page="questions" type="button">
+              <span class="nav-icon">P</span>
+              <span>Perguntas</span>
+            </button>
+          </nav>
+        </aside>
+
+        <main class="content">
+          <section class="page active" id="page-dashboard" aria-labelledby="dashboard-title">
+            <div class="page-header">
+              <div>
+                <span class="eyebrow">Visão geral</span>
+                <h1 id="dashboard-title">Dashboard</h1>
+              </div>
+              <button class="button secondary compact" id="dashboard-reload-button" type="button">
+                Atualizar
+              </button>
+            </div>
+
+            <div class="stats-grid">
+              <article class="stat-card">
+                <span class="stat-label">Articuladores</span>
+                <strong class="stat-value" id="stat-articulators">-</strong>
+                <span class="stat-note">ativos</span>
+              </article>
+              <article class="stat-card">
+                <span class="stat-label">Perguntas</span>
+                <strong class="stat-value" id="stat-questions">-</strong>
+                <span class="stat-note">no fluxo</span>
+              </article>
+            </div>
+
+            <section class="panel activity-panel" aria-labelledby="activity-title">
+              <div class="panel-header">
+                <h2 id="activity-title">Atividade</h2>
+                <span class="panel-meta" id="last-sync-label">Aguardando dados</span>
+              </div>
+              <div class="activity-log" id="activity-log" aria-live="polite">
+                <div class="log-line muted">Nenhuma atividade nesta sessão.</div>
+              </div>
+            </section>
+          </section>
+
+          <section class="page" id="page-articulators" aria-labelledby="articulators-title">
+            <div class="page-header">
+              <div>
+                <span class="eyebrow">Gestão</span>
+                <h1 id="articulators-title">Articuladores</h1>
+              </div>
+              <div class="header-actions">
+                <button class="button secondary compact" id="articulators-reload-button" type="button">
+                  Recarregar
+                </button>
+                <button class="button primary compact" id="articulators-save-button" type="button">
+                  Salvar
+                </button>
+              </div>
+            </div>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Novo articulador</h2>
+              </div>
+              <form id="articulator-add-form" class="inline-form">
+                <div class="field">
+                  <label for="articulator-name">Nome</label>
+                  <input id="articulator-name" name="name" type="text" placeholder="Nome completo" required />
+                </div>
+                <div class="field">
+                  <label for="articulator-phone">Telefone</label>
+                  <input
+                    id="articulator-phone"
+                    name="phone"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="5511999999999"
+                    required
+                  />
+                </div>
+                <button class="button secondary" type="submit">Adicionar</button>
+              </form>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Lista</h2>
+                <span class="panel-meta" id="articulators-count">0 itens</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Telefone</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="articulators-rows"></tbody>
+                </table>
+              </div>
+              <div id="articulators-feedback" class="feedback hidden"></div>
+            </section>
+          </section>
+
+          <section class="page" id="page-questions" aria-labelledby="questions-title">
+            <div class="page-header">
+              <div>
+                <span class="eyebrow">Gestão</span>
+                <h1 id="questions-title">Perguntas</h1>
+              </div>
+            </div>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Editor</h2>
+                <span class="panel-meta" id="questions-count">0 itens</span>
+              </div>
+              <div id="questions-list" class="question-list"></div>
+              <div class="panel-actions">
+                <button class="button secondary compact" id="questions-reload-button" type="button">
+                  Recarregar
+                </button>
+                <button class="button secondary compact" id="questions-add-button" type="button">
+                  Adicionar
+                </button>
+                <button class="button primary compact" id="questions-save-button" type="button">
+                  Salvar
+                </button>
+              </div>
+              <div id="questions-feedback" class="feedback hidden"></div>
+            </section>
+          </section>
+
+        </main>
+      </div>
+    </div>
+
+    <script src="/admin/assets/admin-shared.js" defer></script>
+    <script src="/admin/assets/panel.js" defer></script>
+  </body>
+</html>

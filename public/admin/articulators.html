@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin RBAC - Articuladores</title>
+    <link rel="icon" type="image/svg+xml" href="/admin/assets/favicon.svg" />
+    <link rel="stylesheet" href="/admin/assets/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <div class="row wrap row-between">
+          <div>
+            <h1>Articuladores</h1>
+            <p>Edite a lista localmente e depois clique em salvar para sincronizar tudo.</p>
+          </div>
+          <a class="button-link secondary" href="/admin/select">Voltar</a>
+        </div>
+
+        <form id="add-form" class="row wrap">
+          <input id="name" name="name" type="text" placeholder="Nome" required />
+          <input id="phone" name="phone" type="text" placeholder="Telefone (ex.: 5511999999999)" required />
+          <button class="secondary" type="submit">Adicionar</button>
+        </form>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+
+        <div class="row row-end">
+          <button class="secondary" id="reload-button" type="button">Recarregar</button>
+          <button class="primary" id="save-button" type="button">Salvar</button>
+        </div>
+
+        <div id="feedback" class="feedback hidden"></div>
+      </section>
+    </main>
+
+    <script src="/admin/assets/admin-shared.js" defer></script>
+    <script src="/admin/assets/articulators.js" defer></script>
+  </body>
+</html>

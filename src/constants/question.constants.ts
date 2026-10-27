@@ -1,0 +1,1 @@
+export const QUESTION_OPTIONS_MAX = 100;

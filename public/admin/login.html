@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin RBAC - Login</title>
+    <link rel="icon" type="image/svg+xml" href="/admin/assets/favicon.svg" />
+    <link rel="stylesheet" href="/admin/assets/styles.css" />
+  </head>
+  <body>
+    <main class="login-screen">
+      <section class="login-card">
+        <div class="login-kicker">RBAC</div>
+        <h1>Chatbot Admin</h1>
+        <p>Área de gestão dos articuladores e perguntas do fluxo.</p>
+
+        <form id="login-form">
+          <div class="field">
+            <label for="token">Token admin</label>
+            <input
+              id="token"
+              name="token"
+              type="password"
+              placeholder="Digite seu token"
+              autocomplete="off"
+              required
+            />
+          </div>
+
+          <div class="row row-end">
+            <button id="enter-button" class="button primary" type="submit">Entrar</button>
+          </div>
+        </form>
+
+        <div id="feedback" class="feedback hidden"></div>
+      </section>
+    </main>
+
+    <script>
+      const loginForm = document.getElementById("login-form");
+      const tokenInput = document.getElementById("token");
+      const enterButton = document.getElementById("enter-button");
+      const feedbackElement = document.getElementById("feedback");
+
+      function showFeedback(message) {
+        feedbackElement.textContent = message;
+        feedbackElement.classList.remove("hidden");
+        feedbackElement.classList.add("err");
+      }
+
+      function setLoading(isLoading) {
+        enterButton.disabled = isLoading;
+        enterButton.textContent = isLoading ? "Validando..." : "Entrar";
+      }
+
+      async function createSession(token) {
+        const response = await fetch("/admin/session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
+        });
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error("Token inválido.");
+          }
+
+          throw new Error("Não foi possível iniciar sessão.");
+        }
+      }
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const token = tokenInput.value.trim();
+
+        if (!token) {
+          showFeedback("Informe o token admin.");
+          return;
+        }
+
+        setLoading(true);
+        feedbackElement.classList.add("hidden");
+
+        try {
+          await createSession(token);
+          window.location.assign("/admin/select");
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Erro inesperado.";
+          showFeedback(message);
+        } finally {
+          setLoading(false);
+        }
+      });
+    </script>
+  </body>
+</html>

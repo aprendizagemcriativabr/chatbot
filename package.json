@@ -1,0 +1,36 @@
+{
+  "name": "chatbot_poc",
+  "version": "1.0.0",
+  "description": "Chatbot para coleta de informações dos boletins via WhatsApp",
+  "license": "ISC",
+  "author": "Rede Brasileira de Aprendizagem Criativa",
+  "main": "index.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "tsx watch --include \"src/**/*.ts\" src/index.ts",
+    "build": "rm -rf dist && tsc",
+    "build:bundle": "make build-bundle",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "create-tunnel": "cloudflared tunnel --protocol http2 --url http://localhost:3000"
+  },
+  "dependencies": {
+    "axios": "^1.13.6",
+    "cookie": "^1.1.1",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "googleapis": "^171.4.0",
+    "mssql": "^12.2.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/mssql": "^9.1.11",
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.28.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
