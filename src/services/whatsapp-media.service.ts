@@ -1,4 +1,6 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
+import https from "https";
 
 export interface WhatsAppMediaDownloadResult {
   mediaId: string;
@@ -18,6 +20,10 @@ function extensionFromMime(mimeType: string): string {
     "image/jpeg": "jpg",
     "image/png": "png",
     "video/mp4": "mp4",
+    "audio/ogg": "ogg",      // Áudios e mensagens de voz do WhatsApp
+    "audio/aac": "aac",
+    "audio/mpeg": "mp3",
+    "application/pdf": "pdf" // Documentos frequentes
   };
 
   return map[mimeType] || "bin";
@@ -25,6 +31,7 @@ function extensionFromMime(mimeType: string): string {
 
 export class WhatsAppMediaService {
   private readonly accessToken: string;
+  private readonly apiClient;
 
   constructor() {
     const token = process.env.ACCESS_TOKEN;
@@ -34,6 +41,26 @@ export class WhatsAppMediaService {
     }
 
     this.accessToken = token;
+
+    // Centraliza as configurações de rede, timeout e autenticação
+    this.apiClient = axios.create({
+      timeout: 20000,
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+      httpsAgent: new https.Agent({
+        keepAlive: true
+      })
+    });
+
+    // Aplica a política de retentativa para absorver os ETIMEDOUT silenciosamente
+    axiosRetry(this.apiClient, {
+      retries: 3,
+      retryDelay: axiosRetry.exponentialDelay,
+      retryCondition: (error) => {
+        return error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED';
+      }
+    });
   }
 
   async downloadMedia(mediaId: string): Promise<WhatsAppMediaDownloadResult> {
@@ -41,12 +68,9 @@ export class WhatsAppMediaService {
     const mimeType = metadata.mime_type || "application/octet-stream";
     const extension = extensionFromMime(mimeType);
 
-    const binaryResponse = await axios.get<ArrayBuffer>(metadata.url, {
+    // Utiliza a instância configurada em vez do axios estático
+    const binaryResponse = await this.apiClient.get<ArrayBuffer>(metadata.url, {
       responseType: "arraybuffer",
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-      },
-      timeout: 20000,
     });
 
     return {
@@ -58,14 +82,8 @@ export class WhatsAppMediaService {
   }
 
   private async fetchMetadata(mediaId: string): Promise<WhatsAppMediaMetadata> {
-    const response = await axios.get<WhatsAppMediaMetadata>(
-      `https://graph.facebook.com/v22.0/${mediaId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-        },
-        timeout: 20000,
-      },
+    const response = await this.apiClient.get<WhatsAppMediaMetadata>(
+      `https://graph.facebook.com/v22.0/${mediaId}`
     );
 
     return response.data;
